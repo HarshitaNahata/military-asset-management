@@ -2,8 +2,7 @@
 import { createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
-    user: null,
-    role: 'guest', // 'admin', 'commander', 'logistics'
+    user: null, // { name, email, role, baseId, ... }
     currentBase: null
 };
 
@@ -12,13 +11,11 @@ const authSlice = createSlice({
     initialState,
     reducers: {
         login: (state, action) => {
-            state.user = action.payload.user;
-            state.role = action.payload.role;
-            state.currentBase = action.payload.baseId;
+            state.user = action.payload.user; // user object includes role, etc.
+            state.currentBase = action.payload.user?.baseId || null;
         },
         logout: (state) => {
             state.user = null;
-            state.role = 'guest';
             state.currentBase = null;
         }
     }

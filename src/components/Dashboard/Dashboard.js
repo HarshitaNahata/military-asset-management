@@ -1,6 +1,6 @@
 // components/Dashboard/Dashboard.js
 import React, { useState } from 'react';
-import { Grid, Card, CardContent, Typography, Select, MenuItem } from '@mui/material';
+import { Grid, Select, MenuItem } from '@mui/material';
 import MetricCard from './MetricCard';
 
 const Dashboard = () => {
