@@ -1,6 +1,6 @@
 // components/Dashboard/Dashboard.js
-import React, { useState } from 'react';
-import { Grid, Select, MenuItem } from '@mui/material';
+import React, { useState, useEffect } from 'react';
+import { Grid, Select, MenuItem, FormControl, InputLabel, Box, Typography, Container, Modal } from '@mui/material';
 import MetricCard from './MetricCard';
 
 const Dashboard = () => {
@@ -10,6 +10,8 @@ const Dashboard = () => {
         equipmentType: ''
     });
 
+    const [showMovementDetails, setShowMovementDetails] = useState(false);
+
     const metrics = [
         { title: 'Opening Balance', value: 1500 },
         { title: 'Closing Balance', value: 1350 },
@@ -18,43 +20,121 @@ const Dashboard = () => {
         { title: 'Expended Assets', value: 65 }
     ];
 
+    const movementDetails = {
+        purchases: 250,
+        transferIn: 150,
+        transferOut: 200
+    };
+
+    const handleFilterChange = (e) => {
+        setFilters({
+            ...filters,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handleMetricClick = (title) => {
+        if (title === 'Net Movement') {
+            setShowMovementDetails(true);
+        }
+    };
+
     return (
-        <div style={{ padding: 20 }}>
-            {/* Filter Section */}
-            <div style={{ marginBottom: 30 }}>
-                <Select
-                    value={filters.base}
-                    onChange={e => setFilters({ ...filters, base: e.target.value })}
-                    displayEmpty
-                    sx={{ mr: 2, width: 200 }}
-                >
-                    <MenuItem value="">All Bases</MenuItem>
-                    <MenuItem value="base-1">Base Alpha</MenuItem>
-                    <MenuItem value="base-2">Base Bravo</MenuItem>
-                </Select>
+        <Container>
+            <Typography variant="h4" gutterBottom>Asset Dashboard</Typography>
 
-                <Select
-                    value={filters.equipmentType}
-                    onChange={e => setFilters({ ...filters, equipmentType: e.target.value })}
-                    displayEmpty
-                    sx={{ width: 200 }}
-                >
-                    <MenuItem value="">All Equipment</MenuItem>
-                    <MenuItem value="weapons">Weapons</MenuItem>
-                    <MenuItem value="vehicles">Vehicles</MenuItem>
-                    <MenuItem value="ammo">Ammunition</MenuItem>
-                </Select>
-            </div>
+            {/* Filters */}
+            <Box sx={{ mb: 3, display: 'flex', gap: 2 }}>
+                <FormControl sx={{ minWidth: 120 }}>
+                    <InputLabel>Date</InputLabel>
+                    <Select
+                        name="date"
+                        value={filters.date}
+                        label="Date"
+                        onChange={handleFilterChange}
+                    >
+                        <MenuItem value="">All</MenuItem>
+                        <MenuItem value="today">Today</MenuItem>
+                        <MenuItem value="week">This Week</MenuItem>
+                        <MenuItem value="month">This Month</MenuItem>
+                    </Select>
+                </FormControl>
 
-            {/* Metrics Grid */}
+                <FormControl sx={{ minWidth: 120 }}>
+                    <InputLabel>Base</InputLabel>
+                    <Select
+                        name="base"
+                        value={filters.base}
+                        label="Base"
+                        onChange={handleFilterChange}
+                    >
+                        <MenuItem value="">All</MenuItem>
+                        <MenuItem value="base1">Base Alpha</MenuItem>
+                        <MenuItem value="base2">Base Bravo</MenuItem>
+                    </Select>
+                </FormControl>
+
+                <FormControl sx={{ minWidth: 120 }}>
+                    <InputLabel>Equipment Type</InputLabel>
+                    <Select
+                        name="equipmentType"
+                        value={filters.equipmentType}
+                        label="Equipment Type"
+                        onChange={handleFilterChange}
+                    >
+                        <MenuItem value="">All</MenuItem>
+                        <MenuItem value="weapons">Weapons</MenuItem>
+                        <MenuItem value="vehicles">Vehicles</MenuItem>
+                        <MenuItem value="ammunition">Ammunition</MenuItem>
+                    </Select>
+                </FormControl>
+            </Box>
+
+            {/* Metrics */}
             <Grid container spacing={3}>
-                {metrics.map((metric, index) => (
-                    <Grid item xs={12} sm={6} md={4} lg={3} key={index}>
-                        <MetricCard title={metric.title} value={metric.value} />
+                {metrics.map((metric) => (
+                    <Grid item xs={12} sm={6} md={4} key={metric.title}>
+                        <MetricCard
+                            title={metric.title}
+                            value={metric.value}
+                            onClick={() => handleMetricClick(metric.title)}
+                        />
                     </Grid>
                 ))}
             </Grid>
-        </div>
+
+            {/* Net Movement Details Modal */}
+            <Modal
+                open={showMovementDetails}
+                onClose={() => setShowMovementDetails(false)}
+            >
+                <Box sx={{
+                    position: 'absolute',
+                    top: '50%',
+                    left: '50%',
+                    transform: 'translate(-50%, -50%)',
+                    width: 400,
+                    bgcolor: 'background.paper',
+                    boxShadow: 24,
+                    p: 4,
+                }}>
+                    <Typography variant="h6" component="h2" gutterBottom>
+                        Net Movement Details
+                    </Typography>
+                    <Grid container spacing={2}>
+                        <Grid item xs={12}>
+                            <MetricCard title="Purchases" value={movementDetails.purchases} />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <MetricCard title="Transfer In" value={movementDetails.transferIn} />
+                        </Grid>
+                        <Grid item xs={12}>
+                            <MetricCard title="Transfer Out" value={movementDetails.transferOut} />
+                        </Grid>
+                    </Grid>
+                </Box>
+            </Modal>
+        </Container>
     );
 };
 

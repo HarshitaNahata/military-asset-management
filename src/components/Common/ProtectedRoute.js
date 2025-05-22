@@ -1,4 +1,4 @@
-// components/Common/ProtectedRoute.js
+// components/Common/ProtectedRoute.js'
 
 import { useSelector } from 'react-redux';
 import { Navigate, Outlet } from 'react-router-dom';
@@ -14,10 +14,10 @@ const ProtectedRoute = ({ requiredRoles }) => {
 
     // 2. Check if user has required role (authorization)
     if (!requiredRoles.includes(role)) {
-        return <Navigate to="/unauthorized" replace />; // Create this route
+        return <Navigate to="/unauthorized" replace />;
     }
 
-    return <Outlet />;
+    return <Outlet />; // Render child routes
 };
 
 export default ProtectedRoute;

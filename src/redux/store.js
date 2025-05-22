@@ -1,14 +1,16 @@
-// redux/store.js
 import { configureStore } from '@reduxjs/toolkit';
 import authReducer from './slices/authSlice';
-// Import other reducers here as your app grows
+import assetsReducer from './slices/assetsSlice';
 
 const store = configureStore({
     reducer: {
         auth: authReducer,
-        // Add other reducers here
+        assets: assetsReducer
     },
-    devTools: process.env.NODE_ENV !== 'production',
+    middleware: (getDefaultMiddleware) =>
+        getDefaultMiddleware({
+            serializableCheck: false
+        })
 });
 
 export default store;
